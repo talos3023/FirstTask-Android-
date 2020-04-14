@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">First Task</string>
+    <string name="question1_answer">7</string>
+    <string name="question2_answer">12</string>
+    <string name="question3_answer">98</string>
+    <string name="question4_answer">2194</string>
+</resources>
