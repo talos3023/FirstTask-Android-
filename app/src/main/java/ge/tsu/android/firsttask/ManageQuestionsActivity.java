@@ -1,36 +1,32 @@
 package ge.tsu.android.firsttask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import ge.tsu.android.firsttask.data.QuizHistory;
 import ge.tsu.android.firsttask.data.QuizQuestion;
-import ge.tsu.android.firsttask.data.QuizScore;
 import ge.tsu.android.firsttask.data.QuizStorage;
 import ge.tsu.android.firsttask.data.Storage;
 import ge.tsu.android.firsttask.data.StorageImpl;
 
-public class QuizActivity extends AppCompatActivity {
-
+public class ManageQuestionsActivity extends AppCompatActivity {
     private ListView mQuestions;
     private QuestionArrayAdapter questionArrayAdapter;
     private String[] mAnswers;
@@ -39,7 +35,7 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
+        setContentView(R.layout.activity_manage_questions);
         mQuestions = findViewById(R.id.questions);
         questionArrayAdapter = new QuestionArrayAdapter(this, 0, new ArrayList<QuizQuestion>());
         mQuestions.setAdapter(questionArrayAdapter);
@@ -54,48 +50,6 @@ public class QuizActivity extends AppCompatActivity {
             questionArrayAdapter.addAll(quizQuestions);
             mAnswers = new String[quizStorage.getQuestions().size()];
         }
-
-        findViewById(R.id.complete_quiz).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                completeQuiz();
-            }
-        });
-    }
-
-    public void completeQuiz() {
-        int score = 0;
-
-        for (QuizQuestion quizQuestion : quizQuestions) {
-            if (quizQuestion.getCorrectAnswerNumber().equals(quizQuestion.getUserAnswerNumber())) {
-                score++;
-            }
-        }
-        Log.i("Score", score + "");
-        saveScoreInHistory(score);
-        Toast.makeText(this, String.format("Score is %d", score), Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    // TODO move all storage related code in QuizHistoryStorage implementation
-    public void saveScoreInHistory(int score) {
-        QuizScore quizScore = new QuizScore();
-        quizScore.setScore(score);
-        quizScore.setDate(Calendar.getInstance());
-        Storage storage = new StorageImpl();
-        Object storageAsObject = storage.getObject(this, QuizHistory.QUIZ_HISTORY_KEY, QuizHistory.class);
-
-        QuizHistory quizHistory;
-        if (storageAsObject != null) {
-            quizHistory = (QuizHistory) storageAsObject;
-        } else {
-            quizHistory = new QuizHistory();
-        }
-
-        quizHistory.getQuizScoreList().add(quizScore);
-        storage.add(this, QuizHistory.QUIZ_HISTORY_KEY, quizHistory);
-
-        finish();
     }
 
     class QuestionArrayAdapter extends ArrayAdapter<QuizQuestion> {
@@ -135,7 +89,31 @@ public class QuizActivity extends AppCompatActivity {
             option3.setText(options.get(2));
             RadioButton option4 = view.findViewById(R.id.answer_option4);
             option4.setText(options.get(3));
+            Button button = new Button(this.mContext);
+            button.setText("delete question");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteQuestion(current);
+                }
+            });
+            ((LinearLayout) view).addView(button);
             return view;
         }
+    }
+
+    public void deleteQuestion(QuizQuestion quizQuestion) {
+        Storage storage = new StorageImpl();
+        Object storageAsObject = storage
+                .getObject(this, QuizStorage.QUIZ_STORAGE_KEY, QuizStorage.class);
+
+        QuizStorage quizStorage = (QuizStorage) storageAsObject;
+
+        quizStorage.getQuestions().remove(quizQuestion);
+        storage.add(this, QuizStorage.QUIZ_STORAGE_KEY, quizStorage);
+
+        Intent intentReload = new Intent(this, ManageQuestionsActivity.class);
+        finish();
+        startActivity(intentReload);
     }
 }

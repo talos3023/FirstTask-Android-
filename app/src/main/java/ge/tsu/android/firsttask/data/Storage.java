@@ -4,9 +4,9 @@ import android.content.Context;
 
 public interface Storage {
 
-  void add(Context context, String key, Object value);
+    void add(Context context, String key, Object value);
 
-  Object getObject(Context context, String key, Class klass);
+    Object getObject(Context context, String key, Class klass);
 
-  String getString(Context context, String key);
+    String getString(Context context, String key);
 }

@@ -21,10 +21,38 @@
     </EditText>
 
     <EditText
-        android:id="@+id/answer"
+        android:id="@+id/answer_option1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Answer">
+        android:hint="First Answer">
+    </EditText>
+
+    <EditText
+        android:id="@+id/answer_option2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Second Answer">
+    </EditText>
+
+    <EditText
+        android:id="@+id/answer_option3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Third Answer">
+    </EditText>
+
+    <EditText
+        android:id="@+id/answer_option4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fourth Answer">
+    </EditText>
+
+    <EditText
+        android:id="@+id/correct_answer_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correct answer number">
     </EditText>
 
     <Button
